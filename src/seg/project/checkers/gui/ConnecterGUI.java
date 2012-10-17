@@ -30,6 +30,7 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 	private JTextArea connectHost;
 	private JTextArea connectPort;
 	private JLabel messageLabel;
+	private JButton accept;
 	public ConnecterGUI(int port) throws IOException{
 		super("Connection creater");
 		CheckerGame.getInstance().setServer(new CheckersServer(port));
@@ -39,7 +40,7 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 		makeConnection.addActionListener(this);
 		connectionRequests = new JList<String>();
 		connectionRequests.setToolTipText("This shows all the players who want to start a game with you");
-		JButton accept = new JButton("Accept selected player");
+		accept = new JButton("Accept selected player");
 		accept.addActionListener(this);
 		this.add(connectionRequests, BorderLayout.CENTER);
 		this.add(makeConnection, BorderLayout.NORTH);
@@ -97,11 +98,12 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 			}
 			try {
 				CheckerGame.getInstance().setClient(new CheckersClient(host, port));
-				messageLabel.setText("Connected, waiting for response");
+				messageLabel.setText("Connected, please wait for response");
+				((JButton)e.getSource()).setEnabled(false);
+				this.accept.setEnabled(false);
+				
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				messageLabel.setText("Connection Failed");
-		
 			}
 		}
 	}

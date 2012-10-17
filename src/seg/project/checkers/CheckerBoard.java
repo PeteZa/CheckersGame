@@ -28,10 +28,8 @@ public class CheckerBoard  {
 						else if(i <3){
 							grid[i][u] = new CheckerSquare(this,i,u,true);
 							blackPieces.add(grid[i][u]);
-							
 						}
 					}
-				
 				else{
 					if(u%2 == 0){
 						if(i>=5){
