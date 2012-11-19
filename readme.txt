@@ -1,2 +1,5 @@
 This is for assignment 7
-X2-2
+<<<<<<< HEAD
+2-2
+asg
+>>>>>>> cc5ae78c9bb792734e0d62003637700fc5262aef
