@@ -9,7 +9,10 @@ import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.ListModel;
 
 import ocsf.server.ConnectionToClient;
@@ -21,13 +24,16 @@ import seg.project.checkers.CheckersServer;
 public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 	private static final long serialVersionUID = 4L;
 	private CheckersServer server;
-	private CheckersClient client;
 	private JList<String> connectionRequests;
 	private JFrame makeConnectionFrame;
-	public ConnecterGUI() throws IOException{
+	private JTextArea connectHost;
+	private JTextArea connectPort;
+	private JLabel messageLabel;
+	public ConnecterGUI(int port) throws IOException{
 		super("Connection creater");
-		CheckerGame.getInstance().setServer(new CheckersServer());
+		CheckerGame.getInstance().setServer(new CheckersServer(port));
 		server = CheckerGame.getInstance().getServer();
+		CheckerGame.getInstance().addObserver(this);
 		JButton makeConnection = new JButton("Connect to other player");
 		makeConnection.addActionListener(this);
 		connectionRequests = new JList<String>();
@@ -37,6 +43,10 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 		this.add(connectionRequests, BorderLayout.CENTER);
 		this.add(makeConnection, BorderLayout.NORTH);
 		this.add(accept, BorderLayout.SOUTH);
+		this.setSize(200, 200);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -45,11 +55,10 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 			String req = connectionRequests.getSelectedValue();
 			if(req == null)
 				return;
-			Thread [] temp = server.getClientConnections();
-			ConnectionToClient [] connections = (ConnectionToClient[]) temp;
+			Thread [] connections = server.getClientConnections();
 			int index = -1;
 			for(int i = 0; i < connections.length; i++){
-				if(req.equals(connections[i].getInetAddress().toString())){
+				if(req.equals(((ConnectionToClient)connections[i]).getInetAddress().toString())){
 					index =i;
 				}
 			}
@@ -59,25 +68,101 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 			for(int i = 0; i < connections.length; i++){
 				if(i != index){
 					try {
-						connections[i].close();
+						((ConnectionToClient)connections[i]).close();
 					} catch (IOException e1) {
 						// I don't care if the closing fails, because the connection will be dead anyway
 					}
 				}
 			}
 			this.setVisible(false);
-			new CheckersFrame(true);
+			server.stopListening();
+			if(makeConnectionFrame != null)
+				makeConnectionFrame.setVisible(false);
+			new CheckersFrame();
+			CheckerGame.getInstance().deleteObserver(this);
+			CheckerGame.getInstance().sendCommand("accept");
 		}
 		else if(command.equals("Connect to other player")){
 			setupFrame();
 		}
+		else if(command.equals("Connect")){
+			String host = connectHost.getText();
+			host.trim();
+			int port;
+			if(!host.equals("")){
+				String portString = connectPort.getText();
+				portString.trim();	
+				if(portString.equals("")){
+					port = CheckersServer.DEFAULT_PORT;
+				}
+				else{
+					try{
+						port = Integer.parseInt(portString);
+					}
+					catch(NumberFormatException ex){
+						messageLabel.setText("The port is a integer");
+						return;
+					}
+				}
+			}
+			else{
+				messageLabel.setText("You need to enter a host name");
+				
+				return;
+			}
+			try {
+				CheckerGame.getInstance().setClient(new CheckersClient(host, port));
+				messageLabel.setText("Connected, waiting for response");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				messageLabel.setText("Connection Failed");
+		
+			}
+		}
 	}
 	@Override
-	public void update(Observable arg0, Object arg1) {
-		
+	public void update(Observable arg0, Object conn) {
+		if(CheckerGame.getInstance().getClient()!= null){
+			this.setVisible(false);
+			makeConnectionFrame.setVisible(false);
+			server = null;
+			CheckerGame.getInstance().setServer(null);
+			new CheckersFrame();
+			CheckerGame.getInstance().deleteObserver(this);
+			return;
+		}
+		if(conn instanceof ConnectionToClient){
+			addConnection(((ConnectionToClient)conn).getInetAddress().toString());
+		}
 	}
 	private void setupFrame(){
+		makeConnectionFrame =new JFrame("Connect to other player");
+		makeConnectionFrame.setSize(600, 120);
+		makeConnectionFrame.setLocationRelativeTo(null);
+		messageLabel = new JLabel("Make your connection");
+		makeConnectionFrame.add(messageLabel, BorderLayout.NORTH);
+		JLabel label1 = new JLabel("Enter host name here");
+		connectHost = new JTextArea("");
+		connectHost.setColumns(10);
+		connectHost.setToolTipText("Enter host name here");
+		JLabel label2 = new JLabel("Enter port here, leave empty for default");
+		connectPort = new JTextArea("");
+		connectPort.setToolTipText("Enter port here, leave empty for default");
+		connectPort.setColumns(10);
+		JPanel pane1 = new JPanel();
+		pane1.add(label1,BorderLayout.EAST);
+		pane1.add(connectHost, BorderLayout.WEST);
 		
+		JPanel pane2 = new JPanel();
+		pane2.add(label2,BorderLayout.EAST);
+		pane2.add(connectPort, BorderLayout.WEST);
+		
+		JButton done = new JButton("Connect");
+		done.addActionListener(this);
+		makeConnectionFrame.add(done, BorderLayout.SOUTH);
+		makeConnectionFrame.add(pane2, BorderLayout.EAST);
+		makeConnectionFrame.add(pane1, BorderLayout.WEST);
+		makeConnectionFrame.setVisible(true);
 	}
 	public void addConnection(String name){
 		String [] connections;
@@ -90,7 +175,11 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 		connectionRequests.setListData(connections);
 	}
 	public static void main(String[] args) throws IOException{
-		ConnecterGUI s = new ConnecterGUI();
+		ConnecterGUI s;
+		if(args.length != 0)
+			s= new ConnecterGUI(Integer.parseInt(args[0]));
+		else
+			s = new ConnecterGUI(CheckersServer.DEFAULT_PORT);
 		s.setVisible(true);
 	}
 

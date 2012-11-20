@@ -2,6 +2,10 @@ package seg.project.checkers;
 
 import java.util.Observable;
 
+import javax.swing.JOptionPane;
+
+
+
 
 
 public class CheckerGame extends Observable {
@@ -11,12 +15,17 @@ public class CheckerGame extends Observable {
 	private String text;
 	private boolean turn;
 	private boolean black;
+	private boolean drawReq;
 	private CheckersServer server;
 	private CheckersClient client;
 	
 	private CheckerGame(){
 		setBlack(true);
 		turn = false;
+		setDrawReq(false);
+		board = new CheckerBoard();
+		text="";
+		
 	}
 	// Getters
 	public CheckerBoard getBoard(){
@@ -36,11 +45,39 @@ public class CheckerGame extends Observable {
 		return game;
 	}
 	public void handleCommand(String msg) {
-		// TODO Auto-generated method stub
-		
+		String [] commands = msg.split(":");
+		if(commands[0].equals("accept")){
+			this.setChanged();
+			this.notifyObservers();	
+		}
+		else if(commands[0].equals("move")){
+			if(board.performMove(Integer.parseInt(commands[1]), Integer.parseInt(commands[2]), Integer.parseInt(commands[3]), Integer.parseInt(commands[4]))){
+				this.setTurn(true);
+				this.setChanged();
+				this.notifyObservers();
+			}
+			else{
+				JOptionPane.showMessageDialog(null,"Other player has made illegal move. Attempted to move from X-" +Integer.parseInt(commands[1]) + " Y-" +Integer.parseInt(commands[2]) + " to X-"+Integer.parseInt(commands[3]) +" Y-"+ Integer.parseInt(commands[4]) );
+				System.exit(0);
+			}
+			
+		}
+		else if(commands[0].equals("error")){
+			JOptionPane.showMessageDialog(null, commands[1]);
+			System.exit(0);
+		}
+		else if(commands[0].equals("draw")){
+			if(drawReq){
+				JOptionPane.showMessageDialog(null, "A draw has been accepted");
+				System.exit(0);
+			}
+		}
+	}
+	public void change(){
+		this.setChanged();
 	}
 	public void sendCommand(String msg){
-		
+		server.sendToAllClients(msg);
 	}
 	public CheckersServer getServer() {
 		return server;
@@ -58,10 +95,16 @@ public class CheckerGame extends Observable {
 		return text;
 	}
 	public void addText(String text) {
+		
 		this.text = this.text + System.lineSeparator() + text;
 	}
 	public void blankText(){
-		text = "";
+		String c;
+		if(black)
+			c = "black";
+		else
+			c = "red";
+		text = "You are " + c;
 	}
 	public boolean isBlack() {
 		return black;
@@ -69,5 +112,12 @@ public class CheckerGame extends Observable {
 	public void setBlack(boolean black) {
 		this.black = black;
 	}
+	public boolean isDrawReq() {
+		return drawReq;
+	}
+	public void setDrawReq(boolean drawReq) {
+		this.drawReq = drawReq;
+	}
+
 	
 }

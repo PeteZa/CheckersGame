@@ -15,10 +15,12 @@ import seg.project.checkers.CheckerGame;
 import seg.project.checkers.CheckerSquare;
 
 public class CheckersBoardPanel extends JPanel  implements ActionListener{
-	private JButton currentButton;
+	private CheckerSquare currentButton;
 	private CheckerBoard board;
+	private CheckersFrame frame;
 	private static final long serialVersionUID = 1L;
-	public CheckersBoardPanel(){
+	public CheckersBoardPanel(CheckersFrame frame){
+		this.frame = frame;
 		board = CheckerGame.getInstance().getBoard();
 		this.setLayout(new GridLayout(8, 8));
 		for(int i =0; i < 8;i++){
@@ -54,10 +56,8 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 						}
 					}
 					else	
-						temp.setIcon(new ImageIcon("data/white.png"));
-					
+						temp.setIcon(new ImageIcon("data/white.png"));	
 				}
-				
 				this.add(temp);
 			}
 		}
@@ -68,11 +68,32 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 		{
 			JButton button = (JButton) e.getSource();
 			int [] pos = findLoc(button);
-			
-		}
-		
+			CheckerSquare square = board.getGrid()[pos[0]][pos[1]];
+			if(currentButton == null){					
+				if(square != null&& board.performMove(pos[0], pos[1], pos[0], pos[1])){
+					updateSquare(pos[0],pos[1]);
+					currentButton = square;
+				}
+				else{
+					CheckerGame.getInstance().addText("The place: X-" + pos[0] + ", Y-" + pos[1]+ " is not a valid piece");
+					frame.updateText();
+				}
+			}
+			else{
+				if(board.performMove(currentButton.getxPos(),currentButton.getyPos(), pos[0], pos[1])){
+					updateSquare(pos[0],pos[1]);
+					updateSquare(currentButton.getxPos(),currentButton.getyPos());
+					CheckerGame.getInstance().setTurn(false);
+					CheckerGame.getInstance().sendCommand("move:"+currentButton.getxPos()+":"+currentButton.getyPos()+":"+pos[0]+":"+pos[1]);
+					currentButton=null;
+				}
+				else{
+					CheckerGame.getInstance().addText("The move: X-" + pos[0] + ", Y-" + pos[1]+ " is not a valid move");
+					frame.updateText();
+				}
+			}
+		}	
 	}
-	
 	public void updateSquare(int x, int y){
 		Component comp = this.getComponent(x*8+y);
 		if(comp instanceof JButton){
@@ -84,7 +105,6 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 				button.setIcon(new ImageIcon(square.getImage()));
 			this.repaint();
 		}
-		
 	}
 	public void reDraw(){
 		CheckerSquare[][] squareGrid = board.getGrid();
@@ -105,10 +125,8 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 		}
 		this.repaint();
 	}
-	
-	
 	private ImageIcon getSquareImage(int x, int y){
-		return null;
+		return new ImageIcon(board.getGrid()[x][y].getImage());
 	}
 	private int[] findLoc(JButton button){
 		int [] ret=null;
@@ -123,5 +141,4 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 		}
 		return ret;
 	}
-
 }

@@ -20,11 +20,10 @@ public class CheckersFrame extends JFrame implements Observer{
 	private static final long serialVersionUID = 1L;
 	private JTextArea consoleText;
 	private JScrollPane console;
-
 	private JLabel turnIndicator;
 	private BorderLayout layout;
 	private CheckersBoardPanel board;
-	public CheckersFrame(boolean black){
+	public CheckersFrame(){
 		super("Checkers Game");
 		CheckerGame game = CheckerGame.getInstance();
 		game.addObserver(this);
@@ -41,7 +40,7 @@ public class CheckersFrame extends JFrame implements Observer{
 		temp.addLayoutComponent(turnIndicator,BorderLayout.EAST );
 		this.add(turnIndicator, BorderLayout.NORTH);
 		// Making new board
-		board = new CheckersBoardPanel();
+		board = new CheckersBoardPanel(this);
 		this.add(board, BorderLayout.CENTER);
 		// Final touches
 		this.setSize(900, 620);
@@ -53,12 +52,14 @@ public class CheckersFrame extends JFrame implements Observer{
 		consoleText.setColumns(25);
 		consoleText.setRows(34);
 		consoleText.setLineWrap(true);
-		consoleText.setText("Welcome");
+		CheckerGame.getInstance().blankText();
+		updateText();
 		console = new JScrollPane();
 		console.setBorder(new LineBorder(Color.black, 1, true));
 		console.setViewportView(consoleText);
 		console.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 		this.add(console, BorderLayout.EAST);
+		this.setVisible(true);
 	}
 	@Override
 	public void update(Observable checkersGame, Object update) {
@@ -67,7 +68,7 @@ public class CheckersFrame extends JFrame implements Observer{
 		updateText();
 		board.reDraw();
 	}
-	private void updateText(){
+	public void updateText(){
 		consoleText.setText(CheckerGame.getInstance().getText());
 	}
 }

@@ -23,12 +23,11 @@ public class CheckersServer extends AbstractServer {
 			CheckerGame.getInstance().handleCommand((String)msg);
 		
 	}
-	public boolean acceptPlayer(String client){
-		return false;
+    protected void clientConnected(ConnectionToClient client) {
+    	CheckerGame.getInstance().change();
+    	CheckerGame.getInstance().notifyObservers(client);
+    	
 	}
-/*	protected void clientConnected(ConnectionToClient client) {
-		this.stopListening();
-	}
-	*/
+	
 
 }

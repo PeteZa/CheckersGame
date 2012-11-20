@@ -11,7 +11,6 @@ public class CheckersClient extends AbstractClient {
 		super(host, port);
 		// TODO Auto-generated constructor stub
 		openConnection();
-		this.sendToServer("accept");
 		CheckerGame.getInstance().setBlack(false);
 		CheckerGame.getInstance().setTurn(true);
 	}

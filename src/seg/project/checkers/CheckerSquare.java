@@ -17,9 +17,9 @@ public class CheckerSquare{
 		yPos = y;
 		
 		
-			if(!validPosistion(x,y))
+		if(!validPosistion(x,y))
 				throw new IllegalArgumentException("x posistion " + x+" and y posistion " + y + " is not allowed");
-		
+				
 		black= isBlack;
 		king = false;
 		selected = false;
@@ -46,7 +46,7 @@ public class CheckerSquare{
 	 */
 	private boolean validPosistion(int x, int y){
 		// Fill me out
-		return false; 
+		return true; 
 	}
 	public String getImage(){
 		// Fill me
