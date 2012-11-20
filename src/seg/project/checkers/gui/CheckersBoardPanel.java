@@ -64,6 +64,11 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(!CheckerGame.getInstance().isTurn()){
+			CheckerGame.getInstance().addText("It is not your turn, please wait");
+			frame.updateText();
+			return;
+		}
 		if(e.getSource() instanceof JButton)
 		{
 			JButton button = (JButton) e.getSource();
@@ -83,8 +88,10 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 				if(board.performMove(currentButton.getxPos(),currentButton.getyPos(), pos[0], pos[1])){
 					updateSquare(pos[0],pos[1]);
 					updateSquare(currentButton.getxPos(),currentButton.getyPos());
-					CheckerGame.getInstance().setTurn(false);
-					CheckerGame.getInstance().sendCommand("move:"+currentButton.getxPos()+":"+currentButton.getyPos()+":"+pos[0]+":"+pos[1]);
+					if(!(currentButton.getxPos() == pos[0]&& currentButton.getyPos()== pos[1])){
+						CheckerGame.getInstance().setTurn(false);
+						CheckerGame.getInstance().sendCommand("move:"+currentButton.getxPos()+":"+currentButton.getyPos()+":"+pos[0]+":"+pos[1]);
+					}
 					currentButton=null;
 				}
 				else{

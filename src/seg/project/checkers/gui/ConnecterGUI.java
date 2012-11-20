@@ -76,6 +76,7 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 			}
 			this.setVisible(false);
 			server.stopListening();
+			server.setGameMode(true);
 			if(makeConnectionFrame != null)
 				makeConnectionFrame.setVisible(false);
 			new CheckersFrame();

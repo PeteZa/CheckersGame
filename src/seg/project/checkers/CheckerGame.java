@@ -1,5 +1,6 @@
 package seg.project.checkers;
 
+import java.io.IOException;
 import java.util.Observable;
 
 import javax.swing.JOptionPane;
@@ -77,7 +78,15 @@ public class CheckerGame extends Observable {
 		this.setChanged();
 	}
 	public void sendCommand(String msg){
-		server.sendToAllClients(msg);
+		if(server != null)
+			server.sendToAllClients(msg);
+		else if(client != null)
+			try {
+				client.sendToServer(msg);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Connection to other player lost, exiting");
+				System.exit(0);
+			}
 	}
 	public CheckersServer getServer() {
 		return server;

@@ -2,6 +2,8 @@ package seg.project.checkers;
 
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import ocsf.client.AbstractClient;
 
 public class CheckersClient extends AbstractClient {
@@ -20,6 +22,10 @@ public class CheckersClient extends AbstractClient {
 		if(msg instanceof String)
 			CheckerGame.getInstance().handleCommand((String)msg);
 		
+	}
+	protected void connectionException(Exception exception) {
+		JOptionPane.showMessageDialog(null, "Connection to other player lost, exiting");
+		System.exit(0);
 	}
 
 }
