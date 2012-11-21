@@ -115,8 +115,10 @@ public class CheckerBoard  {
 			return false;
 		if (Math.abs(yPos) != 1)
 			return false;
-
+		
 		if(grid[oldX][oldY] == null)
+			return false;
+		if(grid[newX][newY] != null)
 			return false;
 		// Return true if this is a King
 		if (grid[oldX][oldY].isKing())
@@ -153,9 +155,30 @@ public class CheckerBoard  {
 			return;
 		}
 	}
-	public boolean performMove(int oldX, int oldY, int newX, int newY){
+	public boolean performMove(int oldX, int oldY, int newX, int newY, boolean black){
 		// Fill me out
-		boolean valid = validateMove(oldX, oldY, newX, newY);
+		if(oldX == newX && oldY == newY){
+			CheckerSquare square = grid[oldX][oldY];
+			if(square == null) 
+				return false;
+			if((black && !square.isBlack()) || (!black && square.isBlack()))
+				return false;
+			square.setPieceSelected(!square.isPieceSelected());
+			return true;
+		}
+		if(isValidNonjump(oldX, oldY, newX, newY)){
+			CheckerSquare square = grid[oldX][oldY];
+			if(square == null) 
+				return false;
+			if((black && !square.isBlack()) || (!black && square.isBlack()))
+				return false;
+			grid[newX][newY] = square;
+			square.setxPos(newX);
+			square.setyPos(newY);
+			square.setPieceSelected(false);
+			this.crownKing(newX, newX);
+			grid[oldX][oldY]=null;
+		}
 		// Preform all moves
 		return false;
 		

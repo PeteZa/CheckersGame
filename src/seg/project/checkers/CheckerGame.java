@@ -52,10 +52,9 @@ public class CheckerGame extends Observable {
 			this.notifyObservers();	
 		}
 		else if(commands[0].equals("move")){
-			if(board.performMove(Integer.parseInt(commands[1]), Integer.parseInt(commands[2]), Integer.parseInt(commands[3]), Integer.parseInt(commands[4]))){
+			if(board.performMove(Integer.parseInt(commands[1]), Integer.parseInt(commands[2]), Integer.parseInt(commands[3]), Integer.parseInt(commands[4]), !isBlack())){
 				this.setTurn(true);
-				this.setChanged();
-				this.notifyObservers();
+				this.notifyObservers(null);
 			}
 			else{
 				JOptionPane.showMessageDialog(null,"Other player has made illegal move. Attempted to move from X-" +Integer.parseInt(commands[1]) + " Y-" +Integer.parseInt(commands[2]) + " to X-"+Integer.parseInt(commands[3]) +" Y-"+ Integer.parseInt(commands[4]) );

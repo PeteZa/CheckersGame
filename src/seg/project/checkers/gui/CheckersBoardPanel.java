@@ -75,7 +75,7 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 			int [] pos = findLoc(button);
 			CheckerSquare square = board.getGrid()[pos[0]][pos[1]];
 			if(currentButton == null){					
-				if(square != null&& board.performMove(pos[0], pos[1], pos[0], pos[1])){
+				if(square != null&& board.performMove(pos[0], pos[1], pos[0], pos[1], CheckerGame.getInstance().isBlack())){
 					updateSquare(pos[0],pos[1]);
 					currentButton = square;
 				}
@@ -85,7 +85,7 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 				}
 			}
 			else{
-				if(board.performMove(currentButton.getxPos(),currentButton.getyPos(), pos[0], pos[1])){
+				if(board.performMove(currentButton.getxPos(),currentButton.getyPos(), pos[0], pos[1], CheckerGame.getInstance().isBlack())){
 					updateSquare(pos[0],pos[1]);
 					updateSquare(currentButton.getxPos(),currentButton.getyPos());
 					if(!(currentButton.getxPos() == pos[0]&& currentButton.getyPos()== pos[1])){

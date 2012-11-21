@@ -11,12 +11,7 @@ public class CheckerSquare{
 	public CheckerSquare(CheckerBoard checkerBoard, int x, int y, boolean isBlack){
 		xPos =x;
 		setBoard(checkerBoard);
-		yPos = y;
-		
-		
-		if(!validPosistion(x,y))
-				throw new IllegalArgumentException("x posistion " + x+" and y posistion " + y + " is not allowed");
-				
+		yPos = y;	
 		black= isBlack;
 		king = false;
 		selected = false;
@@ -26,11 +21,6 @@ public class CheckerSquare{
 		xPos =x;
 		setBoard(checkerBoard);
 		yPos = y;
-		
-		
-			if(!validPosistion(x,y))
-				throw new IllegalArgumentException("x posistion " + x+" and y posistion " + y + " is not allowed");
-		
 		black= isBlack;
 		king = isKing;
 		selected = isSelected;
@@ -41,9 +31,7 @@ public class CheckerSquare{
 	 * @param y Y pos on board
 	 * @return if the position is valid for a piece
 	 */
-	private boolean validPosistion(int x, int y){
-		return ((xPos == x) && (yPos == y));
-	}
+	
 	public String getImage(){
 		String imageName = "";
 		if (selected) {
