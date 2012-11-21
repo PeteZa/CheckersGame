@@ -72,17 +72,24 @@ public class CheckerGame extends Observable {
 				JOptionPane.showMessageDialog(null, "A draw has been accepted");
 				System.exit(0);
 			}
+			else{
+				this.addText("The other player requests a draw");
+				this.setChanged();
+				this.notifyObservers();
+			}
 		}
+		drawReq=false;
 	}
 	public void change(){
 		this.setChanged();
 	}
 	public void sendCommand(String msg){
+		Object mes = msg;
 		if(server != null)
-			server.sendToAllClients(msg);
+			server.sendToAllClients(mes);
 		else if(client != null)
 			try {
-				client.sendToServer(msg);
+				client.sendToServer(mes);
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(null, "Connection to other player lost, exiting");
 				System.exit(0);

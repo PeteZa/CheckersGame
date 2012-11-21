@@ -3,11 +3,15 @@ package seg.project.checkers.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -16,12 +20,13 @@ import javax.swing.border.LineBorder;
 import seg.project.checkers.CheckerGame;
 
 
-public class CheckersFrame extends JFrame implements Observer{
+public class CheckersFrame extends JFrame implements Observer, ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JTextArea consoleText;
 	private JScrollPane console;
 	private JLabel turnIndicator;
 	private BorderLayout layout;
+	private JCheckBox draw;
 	private CheckersBoardPanel board;
 	public CheckersFrame(){
 		super("Checkers Game");
@@ -43,7 +48,7 @@ public class CheckersFrame extends JFrame implements Observer{
 		board = new CheckersBoardPanel(this);
 		this.add(board, BorderLayout.CENTER);
 		// Final touches
-		this.setSize(900, 620);
+		this.setSize(900, 630);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		consoleText = new JTextArea();
@@ -58,7 +63,13 @@ public class CheckersFrame extends JFrame implements Observer{
 		console.setBorder(new LineBorder(Color.black, 1, true));
 		console.setViewportView(consoleText);
 		console.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
-		this.add(console, BorderLayout.EAST);
+		JPanel pane = new JPanel();
+		draw = new JCheckBox("Request draw");
+		draw.addActionListener(this);
+		pane.setLayout(new BorderLayout());
+		pane.add(console, BorderLayout.NORTH);
+		pane.add(draw, BorderLayout.SOUTH);
+		this.add(pane, BorderLayout.EAST);
 		this.setVisible(true);
 	}
 	@Override
@@ -67,8 +78,16 @@ public class CheckersFrame extends JFrame implements Observer{
 			return; // if the format is some how not correct
 		updateText();
 		board.reDraw();
+		draw.setEnabled(true);
 	}
 	public void updateText(){
 		consoleText.setText(CheckerGame.getInstance().getText());
+	}
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		draw.setEnabled(false);
+		CheckerGame.getInstance().setDrawReq(true);
+		CheckerGame.getInstance().sendCommand(new String("draw"));
 	}
 }

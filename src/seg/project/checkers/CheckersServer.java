@@ -30,16 +30,26 @@ public class CheckersServer extends AbstractServer {
     protected void clientConnected(ConnectionToClient client) {
     	CheckerGame.getInstance().change();
     	CheckerGame.getInstance().notifyObservers(client);
-    	
 	}
     synchronized protected void clientException(
     	    ConnectionToClient client, Throwable exception) {
+
+
     	if(gameMode)
     	{
     		JOptionPane.showMessageDialog(null, "Connection to other player lost, exiting");
 			System.exit(0);
     	}
     }
+    /*
+    synchronized protected void clientDisconnected(
+    	    ConnectionToClient client) {
+    	if(gameMode)
+    	{
+    		JOptionPane.showMessageDialog(null, "Connection to other player lost, exiting");
+			System.exit(0);
+    	}
+    }*/
 	public boolean isGameMode() {
 		return gameMode;
 	}

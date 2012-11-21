@@ -55,6 +55,7 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 			String req = connectionRequests.getSelectedValue();
 			if(req == null)
 				return;
+			/*
 			Thread [] connections = server.getClientConnections();
 			int index = -1;
 			for(int i = 0; i < connections.length; i++){
@@ -74,6 +75,7 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 					}
 				}
 			}
+			*/
 			this.setVisible(false);
 			server.stopListening();
 			server.setGameMode(true);
