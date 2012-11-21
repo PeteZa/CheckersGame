@@ -218,6 +218,7 @@ public class CheckerBoard  {
 			grid[x][y] = null;
 		} else
 			throw new NullPointerException("No piece Found");
+		// comment
 	}
 	public ArrayList<CheckerSquare> getBlackPieces() {
 		return blackPieces;
