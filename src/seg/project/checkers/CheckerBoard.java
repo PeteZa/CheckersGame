@@ -133,17 +133,46 @@ public class CheckerBoard  {
 		int xPos = newX - oldX;
 		int yPos = newY - oldY;
 
-		//........................................
-		if(grid[oldX][oldY] == null)
+		CheckerSquare square = grid[oldX][oldY];
+		if(square == null)
 			return false;
-		// Return true if this is a King which can go in any direction
-		if (grid[oldX][oldY].isKing())
-			return true;
-
-		// The piece is not a king. Return value of the piece moves forward
-		return ((!grid[oldX][oldY].isBlack()) && yPos > 0)
-				|| (grid[oldX][oldY].isBlack() && yPos < 0);
+		
+		int absX = Math.abs(xPos);
+		int absY = Math.abs(yPos);
+		
+		if (absX != absY) return false;
+        if (absX > 2) return false;
+        if (absY > 2) return false;
+        
+        if(absX == 1){
+        	absX = absX+1;
+        	absY = absY+1;
+        }
+        
+        CheckerSquare jumpSquare = grid[oldX+sign(xPos)][oldY+sign(yPos)];
+        
+        CheckerSquare landSquare = grid[oldX+sign(xPos)][oldY+sign(yPos)];
+        
+        if(jumpSquare == null)return false;
+        if(square.isBlack() == jumpSquare.isBlack())return false;
+ 
+        
+        if(!square.isKing() && ((!grid[oldX][oldY].isBlack()) && yPos > 0)
+				|| (grid[oldX][oldY].isBlack() && yPos < 0))
+				return false;
+        
+        if(landSquare != null)return false;
+        return (true);
 	}
+	
+	private int sign(int value){
+		if (value > 0)
+            return 1;
+        if (value < 0)
+            return -1;
+        return value;
+	}
+	
 	private void crownKing(int newX, int newY){
 		if ((newX == 7) && !grid[newX][newY].isBlack()) {
 			grid[newX][newY].setKing(true);
