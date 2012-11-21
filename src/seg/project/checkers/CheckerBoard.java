@@ -1,6 +1,7 @@
 package seg.project.checkers;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class CheckerBoard  {
@@ -143,22 +144,19 @@ public class CheckerBoard  {
 		if (absX != absY) return false;
         if (absX > 2) return false;
         if (absY > 2) return false;
-        
-        if(absX == 1){
-        	absX = absX+1;
-        	absY = absY+1;
-        }
+       
         
         CheckerSquare jumpSquare = grid[oldX+sign(xPos)][oldY+sign(yPos)];
         
-        CheckerSquare landSquare = grid[oldX+sign(xPos)][oldY+sign(yPos)];
+        CheckerSquare landSquare = grid[oldX+2*sign(xPos)][oldY+2*sign(yPos)];
         
         if(jumpSquare == null)return false;
         if(square.isBlack() == jumpSquare.isBlack())return false;
  
-        
-        if(!square.isKing() && ((!grid[oldX][oldY].isBlack()) && yPos > 0)
-				|| (grid[oldX][oldY].isBlack() && yPos < 0))
+        boolean king = square.isKing();
+        boolean invalidRedMove = ((!grid[oldX][oldY].isBlack()) && xPos > 0);
+        boolean invalidBlackMove = grid[oldX][oldY].isBlack() && xPos < 0;
+        if(!king && (invalidRedMove || invalidBlackMove) )
 				return false;
         
         if(landSquare != null)return false;
@@ -174,12 +172,12 @@ public class CheckerBoard  {
 	}
 	
 	private void crownKing(int newX, int newY){
-		if ((newX == 7) && !grid[newX][newY].isBlack()) {
+		if ((newX == 7) && grid[newX][newY].isBlack()) {
 			grid[newX][newY].setKing(true);
 			return;
 		}
 
-		if ((newX == 0) && grid[newX][newY].isBlack()) {
+		if ((newX == 0) && !grid[newX][newY].isBlack()) {
 			grid[newX][newY].setKing(true);
 			return;
 		}
@@ -196,16 +194,44 @@ public class CheckerBoard  {
 			return true;
 		}
 		if(isValidNonjump(oldX, oldY, newX, newY)){
+			if(canJump(black))
+			{
+				CheckerGame.getInstance().addText("You must make a jump, since it is possible.");
+				return false;
+			}
 			CheckerSquare square = grid[oldX][oldY];
 			if(square == null) 
 				return false;
 			if((black && !square.isBlack()) || (!black && square.isBlack()))
 				return false;
+			
 			grid[newX][newY] = square;
 			square.setxPos(newX);
 			square.setyPos(newY);
 			square.setPieceSelected(false);
-			this.crownKing(newX, newX);
+			this.crownKing(newX, newY);
+			grid[oldX][oldY]=null;
+			return true;
+		}
+		if(isValidjump(oldX,oldY,newX, newY)){
+			CheckerSquare square = grid[oldX][oldY];
+			if(square == null) 
+				return false;
+			if((black && !square.isBlack()) || (!black && square.isBlack()))
+				return false;
+			int dX = sign(newX-oldX);
+			int dY = sign(newY-oldY);
+			CheckerSquare toRem = grid[oldX + dX][oldY+dY];
+			if(square.isBlack())
+				redPieces.remove(toRem);
+			else
+				blackPieces.remove(toRem);
+			grid[oldX + dX][oldY+dY] = null;//Jump piece
+			grid[oldX + 2*dX][oldY+2*dY] = square; // move square
+			square.setxPos(oldX + 2*dX);
+			square.setyPos(oldY+2*dY);
+			square.setPieceSelected(false);
+			this.crownKing(oldX + 2*dX, oldY+2*dY);
 			grid[oldX][oldY]=null;
 			return true;
 		}
@@ -213,13 +239,28 @@ public class CheckerBoard  {
 		return false;
 		
 	}
-	public void removePiece(int x, int y) {
-		if (grid[x][y]!= null) {
-			grid[x][y] = null;
-		} else
-			throw new NullPointerException("No piece Found");
-		// comment
+	public boolean canJump(boolean black) {
+		boolean can = false;
+		if(black){
+			Iterator<CheckerSquare> iter = blackPieces.iterator();
+			while(iter.hasNext() && !can){
+				can = canJump(iter.next());
+			}
+		}
+		else{
+			Iterator<CheckerSquare> iter = redPieces.iterator();
+			while(iter.hasNext() && !can){
+				can = canJump(iter.next());
+			}
+		}
+		return can;
 	}
+	public boolean canJump(CheckerSquare piece) {
+		// TODO Auto-generated method stub
+		// Fill me
+		return false;
+	}
+	
 	public ArrayList<CheckerSquare> getBlackPieces() {
 		return blackPieces;
 	}
@@ -229,6 +270,14 @@ public class CheckerBoard  {
 	public CheckerSquare[][] getGrid() {
 		// TODO Auto-generated method stub
 		return grid;
+	}
+	public boolean win(boolean black){
+		if(blackPieces.isEmpty() && !black)
+			return true;
+		else if(redPieces.isEmpty() && black)
+			return true;
+		return false;
+			
 	}
 	
 	

@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import seg.project.checkers.CheckerBoard;
@@ -18,6 +19,7 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 	private CheckerSquare currentButton;
 	private CheckerBoard board;
 	private CheckersFrame frame;
+	private boolean doubleJ;
 	private static final long serialVersionUID = 1L;
 	public CheckersBoardPanel(CheckersFrame frame){
 		this.frame = frame;
@@ -86,14 +88,36 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 			}
 			else{
 				int ox =currentButton.getxPos(),oy = currentButton.getyPos();
+				if(board.canJump(currentButton)) // going to jump
+					doubleJ = true;
 				if(board.performMove(currentButton.getxPos(),currentButton.getyPos(), pos[0], pos[1], CheckerGame.getInstance().isBlack())){
-					updateSquare(pos[0],pos[1]);
-					updateSquare(ox, oy);
+					reDraw();
 					if(!(ox == pos[0]&& oy== pos[1])){
-						CheckerGame.getInstance().setTurn(false);
 						CheckerGame.getInstance().sendCommand("move:"+ox+":"+oy+":"+pos[0]+":"+pos[1]);
+						if(board.canJump(currentButton) && doubleJ){// double jump
+							CheckerGame.getInstance().addText("You performedthe move from  X-" + ox + ", Y-" + oy + "to X-" + pos[0] + ", Y-" + pos[1]);
+							frame.updateText();
+							return;
+						}
+						CheckerGame.getInstance().sendCommand("done");
+						CheckerGame.getInstance().setTurn(false);
+						if(board.win(CheckerGame.getInstance().isBlack())){
+							JOptionPane.showMessageDialog(null,"You won!");
+							System.exit(0);
+						}
+						else if(board.win(!CheckerGame.getInstance().isBlack())){
+							JOptionPane.showMessageDialog(null,"You lost!");
+							System.exit(0);
+						}
 					}
+					else if(board.canJump(currentButton) && doubleJ){
+						CheckerGame.getInstance().sendCommand("done");
+						CheckerGame.getInstance().setTurn(false);
+					}
+					CheckerGame.getInstance().addText("You performedthe move from  X-" + ox + ", Y-" + oy + "to X-" + pos[0] + ", Y-" + pos[1]);
+					frame.updateText();
 					currentButton=null;
+					doubleJ = false;
 				}
 				else{
 					CheckerGame.getInstance().addText("The move: X-" + pos[0] + ", Y-" + pos[1]+ " is not a valid move");

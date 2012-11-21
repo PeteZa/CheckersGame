@@ -52,11 +52,7 @@ public class CheckerGame extends Observable {
 			this.notifyObservers();	
 		}
 		else if(commands[0].equals("move")){
-			if(board.performMove(Integer.parseInt(commands[1]), Integer.parseInt(commands[2]), Integer.parseInt(commands[3]), Integer.parseInt(commands[4]), !isBlack())){
-				this.setTurn(true);
-				this.notifyObservers(null);
-			}
-			else{
+			if(!board.performMove(Integer.parseInt(commands[1]), Integer.parseInt(commands[2]), Integer.parseInt(commands[3]), Integer.parseInt(commands[4]), !isBlack())){
 				JOptionPane.showMessageDialog(null,"Other player has made illegal move. Attempted to move from X-" +Integer.parseInt(commands[1]) + " Y-" +Integer.parseInt(commands[2]) + " to X-"+Integer.parseInt(commands[3]) +" Y-"+ Integer.parseInt(commands[4]) );
 				System.exit(0);
 			}
@@ -75,6 +71,19 @@ public class CheckerGame extends Observable {
 				this.addText("The other player requests a draw");
 				this.setChanged();
 				this.notifyObservers();
+			}
+		}
+		else if(commands[0].equals("done")){
+			this.setTurn(true);
+			this.addText("Your turn");
+			this.notifyObservers(null);
+			if(board.win(black)){
+				JOptionPane.showMessageDialog(null,"You won!");
+				System.exit(0);
+			}
+			else if(board.win(!black)){
+				JOptionPane.showMessageDialog(null,"You lost!");
+				System.exit(0);
 			}
 		}
 		drawReq=false;
