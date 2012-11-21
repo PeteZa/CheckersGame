@@ -143,12 +143,12 @@ public class CheckerBoard  {
 				|| (grid[oldX][oldY].isBlack() && yPos < 0);
 	}
 	private void crownKing(int newX, int newY){
-		if ((newY == 7) && !grid[newX][newY].isBlack()) {
+		if ((newX == 7) && !grid[newX][newY].isBlack()) {
 			grid[newX][newY].setKing(true);
 			return;
 		}
 
-		if ((newY == 0) && grid[newX][newY].isBlack()) {
+		if ((newX == 0) && grid[newX][newY].isBlack()) {
 			grid[newX][newY].setKing(true);
 			return;
 		}
