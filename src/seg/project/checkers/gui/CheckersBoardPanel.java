@@ -113,9 +113,10 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 			this.repaint();
 		}
 	}
-	public void reDraw(){
+	public JPanel reDraw(){
 		CheckerSquare[][] squareGrid = board.getGrid();
 		this.removeAll();
+		this.setLayout(new GridLayout(8, 8));
 		for(int i =0; i < 8;i++){
 			for(int u = 0;u<8;u++){
 				JButton temp = new JButton();
@@ -130,10 +131,22 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 				add(temp);
 			}
 		}
-		this.repaint();
+		this.validate();
+		return this;
 	}
 	private ImageIcon getSquareImage(int x, int y){
-		return new ImageIcon(board.getGrid()[x][y].getImage());
+		if(x%2==0){
+			if(y%2==0)
+				return(new ImageIcon("data/white.png"));
+			else
+				return (new ImageIcon("data/brown.png"));
+		}
+		else{
+			if(y%2 == 0)
+				return (new ImageIcon("data/brown.png"));
+			else
+				return(new ImageIcon("data/white.png"));
+		}	 
 	}
 	private int[] findLoc(JButton button){
 		int [] ret=null;

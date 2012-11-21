@@ -77,7 +77,10 @@ public class CheckersFrame extends JFrame implements Observer, ActionListener{
 		if(! (checkersGame instanceof CheckerGame))
 			return; // if the format is some how not correct
 		updateText();
-		board.reDraw();
+		this.remove(board);
+		this.add(board.reDraw(), BorderLayout.CENTER);
+		this.validate();
+		this.repaint();
 		draw.setEnabled(true);
 	}
 	public void updateText(){

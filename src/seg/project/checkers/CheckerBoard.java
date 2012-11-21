@@ -62,18 +62,96 @@ public class CheckerBoard  {
 		// I will fill this out
 	}
 	*/
-	public boolean validateMove(int oldX, int oldY, int newX, int newY){
-		// Fill me out
-		return false;
+	public boolean validateMove(int oldX, int oldY, int newX, int newY) {
+		boolean red = (grid[newX][newY].isBlack());
+		boolean piece = grid[newX][newY] == null;
+
+		if (red || red != piece)
+			return false;
+
 		/*
-		 * Make sure to check:
-		 * 1. the move is diagonal
-		 * 2. it is only one square if it is a move
-		 * 3. a friendly piece is not in the way
-		 * 4. If it is a jump
-		 * 5. If a piece blocks the jump 
-		 * 6. If a piece selects itself, deselect it
+		 * If this is a valid non-jump move, then make the move and return true.
+		 * Making the move requires: (0) picking up the piece, (1) putting it
+		 * down on the new square, and (2) promoting it to a new king if necessary.
 		 */
+
+		if (isValidNonjump(oldX, oldY, newX, newY)) {
+			piece = grid[oldX][oldY] == null;
+			grid[newX][newY]= grid[oldY][oldX];
+			grid[oldX][oldY] = null;
+			crownKing(newX, newY);
+			return true;
+		}
+
+		/*
+		 * If this is a valid jump move, then make the move and return true.
+		 * Making the move requires: (0) picking up the piece, (1) putting it
+		 * down on the new square, and (2) promoting the new piece to a king if necessary
+		 */
+		if (isValidjump(oldX, oldY, newX, newY)) {
+			piece = grid[oldX][oldY] == null;
+			grid[newX][newY]= grid[oldY][oldX];
+			grid[oldX][oldY] = null;
+			
+			crownKing(newX, newY);
+			return true;
+		}
+
+		// The move is invalid, so return false
+        return false;
+		/*
+		 * Make sure to check: 1. the move is diagonal 2. it is only one square
+		 * if it is a move 3. a friendly piece is not in the way 4. If it is a
+		 * jump 5. If a piece blocks the jump
+		 */
+	}
+
+	private boolean isValidNonjump(int oldX, int oldY, int newX, int newY) {
+		int xPos = newX - oldX;
+		int yPos = newY - oldY;
+
+		// Return false if the move is not a move to an adjacent row and column,
+		if (Math.abs(xPos) != 1)
+			return false;
+		if (Math.abs(yPos) != 1)
+			return false;
+
+		if(grid[oldX][oldY] == null)
+			return false;
+		// Return true if this is a King
+		if (grid[oldX][oldY].isKing())
+			return true;
+
+		// The piece is not a king. Return value of the piece moves forward
+		return ((!grid[oldX][oldY].isBlack()) && yPos > 0)
+				|| (grid[oldX][oldY].isBlack() && yPos < 0);
+	}
+
+	private boolean isValidjump(int oldX, int oldY, int newX, int newY) {
+		int xPos = newX - oldX;
+		int yPos = newY - oldY;
+
+		//........................................
+		if(grid[oldX][oldY] == null)
+			return false;
+		// Return true if this is a King which can go in any direction
+		if (grid[oldX][oldY].isKing())
+			return true;
+
+		// The piece is not a king. Return value of the piece moves forward
+		return ((!grid[oldX][oldY].isBlack()) && yPos > 0)
+				|| (grid[oldX][oldY].isBlack() && yPos < 0);
+	}
+	private void crownKing(int newX, int newY){
+		if ((newY == 7) && !grid[newX][newY].isBlack()) {
+			grid[newX][newY].setKing(true);
+			return;
+		}
+
+		if ((newY == 0) && grid[newX][newY].isBlack()) {
+			grid[newX][newY].setKing(true);
+			return;
+		}
 	}
 	public boolean performMove(int oldX, int oldY, int newX, int newY){
 		// Fill me out
@@ -82,8 +160,11 @@ public class CheckerBoard  {
 		return false;
 		
 	}
-	public void removePiece(int x, int y){
-		// Fill me out
+	public void removePiece(int x, int y) {
+		if (grid[x][y]!= null) {
+			grid[x][y] = null;
+		} else
+			throw new NullPointerException("No piece Found");
 	}
 	public ArrayList<CheckerSquare> getBlackPieces() {
 		return blackPieces;

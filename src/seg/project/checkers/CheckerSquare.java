@@ -1,8 +1,5 @@
 package seg.project.checkers;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-
 public class CheckerSquare{
 	private boolean king;
 	private boolean black;
@@ -45,56 +42,67 @@ public class CheckerSquare{
 	 * @return if the position is valid for a piece
 	 */
 	private boolean validPosistion(int x, int y){
-		// Fill me out
-		return true; 
+		return ((xPos == x) && (yPos == y));
 	}
 	public String getImage(){
-		// Fill me
-		return "Image location";
-		/*
-		 * Possible images:
-		 * data/white.png
-		 * data/brown.png
-		 * data/blackpiece.png
-		 * data/redpiece.png
-		 * data/redking.png
-		 * data/blackking.png
-		 * data/blackpieceSel.png
-		 * data/redpieceSel.png
-		 * data/redkingSel.png
-		 * data/blackkingSel.png
-		 */
+		String imageName = "";
+		if (selected) {
+			if (black) {
+				imageName = "data/blackpieceSel.png";
+			} else
+				imageName = "data/redpieceSel.png";
+
+			if (king) {
+				if (black) {
+					imageName = "data/blackkingSel.png";
+				} else
+					imageName = "data/redkingSel.png";
+			}
+		} else {
+			if (black) {
+				imageName = "data/blackpiece.png";
+			} else
+				imageName = "data/redpiece.png";
+			if (king) {
+				if (black) {
+					imageName = "data/blackking.png";
+				} else
+					imageName = "data/redking.png";
+			}	
+		}
+
+		return imageName;
 	}
 	public boolean isKing() {
 		return king;
 	}
 	public void setKing(boolean king) {
-		// Fill me
+		this.king = king;
 	}
 
 	public boolean isBlack() {
 		return black;
 	}
 	public void setBlack(boolean black) {
-		// Fill me
+		this.black = black;
 	}
 	public int getxPos() {
 		return xPos;
 	}
 	public void setxPos(int xPos) {
-		// Fill me
+		this.xPos = xPos;
 	}
 	public boolean isPieceSelected(){
 		return selected;
 	}
 	public void setPieceSelected(boolean sel){
-		// Fill me
+		selected = sel;
 	}
 	public int getyPos() {
 		return yPos;
 	}
 	public void setyPos(int yPos) {
-		// Fill me
+		this.yPos = yPos;
 	}
 	public CheckerBoard getBoard() {
 		return board;
