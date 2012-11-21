@@ -85,12 +85,13 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 				}
 			}
 			else{
+				int ox =currentButton.getxPos(),oy = currentButton.getyPos();
 				if(board.performMove(currentButton.getxPos(),currentButton.getyPos(), pos[0], pos[1], CheckerGame.getInstance().isBlack())){
 					updateSquare(pos[0],pos[1]);
-					updateSquare(currentButton.getxPos(),currentButton.getyPos());
-					if(!(currentButton.getxPos() == pos[0]&& currentButton.getyPos()== pos[1])){
+					updateSquare(ox, oy);
+					if(!(ox == pos[0]&& oy== pos[1])){
 						CheckerGame.getInstance().setTurn(false);
-						CheckerGame.getInstance().sendCommand("move:"+currentButton.getxPos()+":"+currentButton.getyPos()+":"+pos[0]+":"+pos[1]);
+						CheckerGame.getInstance().sendCommand("move:"+ox+":"+oy+":"+pos[0]+":"+pos[1]);
 					}
 					currentButton=null;
 				}

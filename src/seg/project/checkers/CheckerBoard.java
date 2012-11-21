@@ -125,8 +125,8 @@ public class CheckerBoard  {
 			return true;
 
 		// The piece is not a king. Return value of the piece moves forward
-		return ((!grid[oldX][oldY].isBlack()) && yPos > 0)
-				|| (grid[oldX][oldY].isBlack() && yPos < 0);
+		return ((!grid[oldX][oldY].isBlack()) && xPos < 0)
+				|| (grid[oldX][oldY].isBlack() && xPos > 0);
 	}
 
 	private boolean isValidjump(int oldX, int oldY, int newX, int newY) {
@@ -178,6 +178,7 @@ public class CheckerBoard  {
 			square.setPieceSelected(false);
 			this.crownKing(newX, newX);
 			grid[oldX][oldY]=null;
+			return true;
 		}
 		// Preform all moves
 		return false;
