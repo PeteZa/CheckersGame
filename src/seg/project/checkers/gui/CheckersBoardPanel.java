@@ -113,7 +113,7 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 			this.repaint();
 		}
 	}
-	public JPanel reDraw(){
+	public void reDraw(){
 		CheckerSquare[][] squareGrid = board.getGrid();
 		this.removeAll();
 		this.setLayout(new GridLayout(8, 8));
@@ -132,7 +132,6 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 			}
 		}
 		this.validate();
-		return this;
 	}
 	private ImageIcon getSquareImage(int x, int y){
 		if(x%2==0){
