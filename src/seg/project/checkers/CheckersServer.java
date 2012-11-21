@@ -13,7 +13,7 @@ public class CheckersServer extends AbstractServer {
 	public CheckersServer(int port) throws IOException {
 		super(port);
 		this.listen();
-		setGameMode(false);
+		gameMode = false;
 	}
 	public CheckersServer() throws IOException{
 		super(DEFAULT_PORT);
@@ -28,13 +28,10 @@ public class CheckersServer extends AbstractServer {
 		
 	}
     protected void clientConnected(ConnectionToClient client) {
-    	CheckerGame.getInstance().change();
     	CheckerGame.getInstance().notifyObservers(client);
 	}
     synchronized protected void clientException(
     	    ConnectionToClient client, Throwable exception) {
-
-
     	if(gameMode)
     	{
     		JOptionPane.showMessageDialog(null, "Connection to other player lost, exiting");
@@ -53,9 +50,41 @@ public class CheckersServer extends AbstractServer {
 	public boolean isGameMode() {
 		return gameMode;
 	}
-	public void setGameMode(boolean gameMode) {
-		this.gameMode = gameMode;
+	public boolean setToGameMode(String client) {
+		if(gameMode)
+			return false;
+		Thread [] connections = this.getClientConnections();
+		int index = -1;
+		for(int i = 0; i < connections.length; i++){
+			if(client.equals(((ConnectionToClient)connections[i]).getInetAddress().toString())){
+				index =i;
+			}
+		}
+		if(index == -1){
+			return false;
+		}
+		for(int i = 0; i < connections.length; i++){
+			if(i != index){
+				try {
+					((ConnectionToClient)connections[i]).close();
+				} catch (IOException e1) {
+					// I don't care if the closing fails, because the connection will be dead anyway
+				}
+			}
+		}
+		
+		
+		this.stopListening();
+		this.gameMode = true;
+		return true;
 	}
-	
+	public void killServer(){
+		try {
+			this.close();
+		} catch (IOException e) {
+			// don't care if there is an issue
+		}
+		CheckerGame.getInstance().setServer(null);
+	}
 
 }

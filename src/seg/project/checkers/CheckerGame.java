@@ -80,8 +80,9 @@ public class CheckerGame extends Observable {
 		}
 		drawReq=false;
 	}
-	public void change(){
+	public void notifyObservers(Object o){
 		this.setChanged();
+		super.notifyObservers(o);
 	}
 	public void sendCommand(String msg){
 		Object mes = msg;

@@ -110,7 +110,7 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 				button.setIcon(getSquareImage(x,y));
 			else
 				button.setIcon(new ImageIcon(square.getImage()));
-			this.repaint();
+			frame.repaint();
 		}
 	}
 	public void reDraw(){

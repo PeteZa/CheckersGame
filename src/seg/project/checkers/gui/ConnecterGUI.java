@@ -55,30 +55,11 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 			String req = connectionRequests.getSelectedValue();
 			if(req == null)
 				return;
-			/*
-			Thread [] connections = server.getClientConnections();
-			int index = -1;
-			for(int i = 0; i < connections.length; i++){
-				if(req.equals(((ConnectionToClient)connections[i]).getInetAddress().toString())){
-					index =i;
-				}
-			}
-			if(index == -1){
+			
+			
+			if(!server.setToGameMode(req))
 				return;
-			}
-			for(int i = 0; i < connections.length; i++){
-				if(i != index){
-					try {
-						((ConnectionToClient)connections[i]).close();
-					} catch (IOException e1) {
-						// I don't care if the closing fails, because the connection will be dead anyway
-					}
-				}
-			}
-			*/
 			this.setVisible(false);
-			server.stopListening();
-			server.setGameMode(true);
 			if(makeConnectionFrame != null)
 				makeConnectionFrame.setVisible(false);
 			new CheckersFrame();
@@ -125,22 +106,17 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 	}
 	@Override
 	public void update(Observable arg0, Object conn) {
-		if(CheckerGame.getInstance().getClient()!= null){
-			this.setVisible(false);
-			makeConnectionFrame.setVisible(false);
-			try {
-				server.close();
-			} catch (IOException e) {
-				// don't care if there is an issue
-			}
-			server = null;
-			CheckerGame.getInstance().setServer(null);
-			new CheckersFrame();
-			CheckerGame.getInstance().deleteObserver(this);
-			return;
-		}
+		
 		if(conn instanceof ConnectionToClient){
 			addConnection(((ConnectionToClient)conn).getInetAddress().toString());
+		}
+		else if(CheckerGame.getInstance().getClient()!= null){
+			server.killServer();
+			server = null;
+			this.setVisible(false);
+			makeConnectionFrame.setVisible(false);
+			new CheckersFrame();
+			CheckerGame.getInstance().deleteObserver(this);
 		}
 	}
 	private void setupFrame(){
