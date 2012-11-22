@@ -52,10 +52,12 @@ public class CheckerGame extends Observable {
 			this.notifyObservers();	
 		}
 		else if(commands[0].equals("move")){
-			if(!board.performMove(Integer.parseInt(commands[1]), Integer.parseInt(commands[2]), Integer.parseInt(commands[3]), Integer.parseInt(commands[4]), !isBlack())){
+			if(!board.validateMove(Integer.parseInt(commands[1]), Integer.parseInt(commands[2]), Integer.parseInt(commands[3]), Integer.parseInt(commands[4]))){
 				JOptionPane.showMessageDialog(null,"Other player has made illegal move. Attempted to move from X-" +Integer.parseInt(commands[1]) + " Y-" +Integer.parseInt(commands[2]) + " to X-"+Integer.parseInt(commands[3]) +" Y-"+ Integer.parseInt(commands[4]) );
 				System.exit(0);
 			}
+			else
+				this.addText("The other player performed the move  X-" +Integer.parseInt(commands[1]) + " Y-" +Integer.parseInt(commands[2]) + " to X-"+Integer.parseInt(commands[3]) +" Y-"+ Integer.parseInt(commands[4]));
 			
 		}
 		else if(commands[0].equals("error")){
@@ -75,6 +77,7 @@ public class CheckerGame extends Observable {
 		}
 		else if(commands[0].equals("done")){
 			this.setTurn(true);
+			
 			this.addText("Your turn");
 			this.notifyObservers(null);
 			if(board.win(black)){

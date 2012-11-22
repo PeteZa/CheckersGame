@@ -78,11 +78,22 @@ public class CheckersFrame extends JFrame implements Observer, ActionListener{
 			return; // if the format is some how not correct
 		updateText();
 		board.reDraw();
+		changeTurn();
 		this.repaint();
 		draw.setEnabled(true);
 	}
 	public void updateText(){
 		consoleText.setText(CheckerGame.getInstance().getText());
+	}
+	public void changeTurn(){
+		boolean turn = CheckerGame.getInstance().isTurn();
+		boolean black = CheckerGame.getInstance().isBlack();
+		String info;
+		if( (turn && !black) || (black&&!turn) )
+			info = "Red's Turn"+ new String(new char[18]); // White spaces
+		else
+			info = "Black's Turn"+ new String(new char[16]);
+		turnIndicator.setText(info);
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

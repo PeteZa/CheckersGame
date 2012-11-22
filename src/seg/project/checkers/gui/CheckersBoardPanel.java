@@ -77,8 +77,8 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 			int [] pos = findLoc(button);
 			CheckerSquare square = board.getGrid()[pos[0]][pos[1]];
 			if(currentButton == null){					
-				if(square != null&& board.performMove(pos[0], pos[1], pos[0], pos[1], CheckerGame.getInstance().isBlack())){
-					updateSquare(pos[0],pos[1]);
+				if(square != null&& board.performMove(pos[0], pos[1], pos[0], pos[1])){
+					reDraw();
 					currentButton = square;
 				}
 				else{
@@ -90,17 +90,18 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 				int ox =currentButton.getxPos(),oy = currentButton.getyPos();
 				if(board.canJump(currentButton)) // going to jump
 					doubleJ = true;
-				if(board.performMove(currentButton.getxPos(),currentButton.getyPos(), pos[0], pos[1], CheckerGame.getInstance().isBlack())){
+				if(board.performMove(currentButton.getxPos(),currentButton.getyPos(), pos[0], pos[1])){
 					reDraw();
 					if(!(ox == pos[0]&& oy== pos[1])){
 						CheckerGame.getInstance().sendCommand("move:"+ox+":"+oy+":"+pos[0]+":"+pos[1]);
 						if(board.canJump(currentButton) && doubleJ){// double jump
-							CheckerGame.getInstance().addText("You performedthe move from  X-" + ox + ", Y-" + oy + "to X-" + pos[0] + ", Y-" + pos[1]);
+							CheckerGame.getInstance().addText("You performed the move from  X-" + ox + ", Y-" + oy + " to X-" + pos[0] + ", Y-" + pos[1]);
 							frame.updateText();
 							return;
 						}
 						CheckerGame.getInstance().sendCommand("done");
 						CheckerGame.getInstance().setTurn(false);
+						frame.changeTurn();
 						if(board.win(CheckerGame.getInstance().isBlack())){
 							JOptionPane.showMessageDialog(null,"You won!");
 							System.exit(0);
@@ -114,7 +115,7 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 						CheckerGame.getInstance().sendCommand("done");
 						CheckerGame.getInstance().setTurn(false);
 					}
-					CheckerGame.getInstance().addText("You performedthe move from  X-" + ox + ", Y-" + oy + "to X-" + pos[0] + ", Y-" + pos[1]);
+					CheckerGame.getInstance().addText("You performed the move from  X-" + ox + ", Y-" + oy + " to X-" + pos[0] + ", Y-" + pos[1]);
 					frame.updateText();
 					currentButton=null;
 					doubleJ = false;
@@ -126,18 +127,7 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 			}
 		}	
 	}
-	public void updateSquare(int x, int y){
-		Component comp = this.getComponent(x*8+y);
-		if(comp instanceof JButton){
-			JButton button = (JButton) comp;
-			CheckerSquare square = board.getGrid()[x][y];
-			if(square == null)
-				button.setIcon(getSquareImage(x,y));
-			else
-				button.setIcon(new ImageIcon(square.getImage()));
-			frame.repaint();
-		}
-	}
+	
 	public void reDraw(){
 		CheckerSquare[][] squareGrid = board.getGrid();
 		this.removeAll();

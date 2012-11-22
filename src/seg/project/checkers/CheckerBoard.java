@@ -64,48 +64,49 @@ public class CheckerBoard  {
 	}
 	*/
 	public boolean validateMove(int oldX, int oldY, int newX, int newY) {
-		boolean red = (grid[newX][newY].isBlack());
-		boolean piece = grid[newX][newY] == null;
-
-		if (red || red != piece)
-			return false;
-
-		/*
-		 * If this is a valid non-jump move, then make the move and return true.
-		 * Making the move requires: (0) picking up the piece, (1) putting it
-		 * down on the new square, and (2) promoting it to a new king if necessary.
-		 */
-
-		if (isValidNonjump(oldX, oldY, newX, newY)) {
-			piece = grid[oldX][oldY] == null;
-			grid[newX][newY]= grid[oldY][oldX];
-			grid[oldX][oldY] = null;
-			crownKing(newX, newY);
-			return true;
-		}
-
-		/*
-		 * If this is a valid jump move, then make the move and return true.
-		 * Making the move requires: (0) picking up the piece, (1) putting it
-		 * down on the new square, and (2) promoting the new piece to a king if necessary
-		 */
-		if (isValidjump(oldX, oldY, newX, newY)) {
-			piece = grid[oldX][oldY] == null;
-			grid[newX][newY]= grid[oldY][oldX];
-			grid[oldX][oldY] = null;
+		boolean black = !CheckerGame.getInstance().isBlack();
+		if(isValidNonjump(oldX, oldY, newX, newY)){
+			if(canJump(black))
+				return false;
+			CheckerSquare square = grid[oldX][oldY];
+			if(square == null) 
+				return false;
+			if((black && !square.isBlack()) || (!black && square.isBlack()))
+				return false;
 			
-			crownKing(newX, newY);
+			grid[newX][newY] = square;
+			square.setxPos(newX);
+			square.setyPos(newY);
+			square.setPieceSelected(false);
+			this.crownKing(newX, newY);
+			grid[oldX][oldY]=null;
 			return true;
 		}
-
-		// The move is invalid, so return false
-        return false;
-		/*
-		 * Make sure to check: 1. the move is diagonal 2. it is only one square
-		 * if it is a move 3. a friendly piece is not in the way 4. If it is a
-		 * jump 5. If a piece blocks the jump
-		 */
-	}
+		if(isValidjump(oldX,oldY,newX, newY)){
+			CheckerSquare square = grid[oldX][oldY];
+			if(square == null) 
+				return false;
+			if((black && !square.isBlack()) || (!black && square.isBlack()))
+				return false;
+			int dX = sign(newX-oldX);
+			int dY = sign(newY-oldY);
+			CheckerSquare toRem = grid[oldX + dX][oldY+dY];
+			if(square.isBlack())
+				redPieces.remove(toRem);
+			else
+				blackPieces.remove(toRem);
+			grid[oldX + dX][oldY+dY] = null;//Jump piece
+			grid[oldX + 2*dX][oldY+2*dY] = square; // move square
+			square.setxPos(oldX + 2*dX);
+			square.setyPos(oldY+2*dY);
+			square.setPieceSelected(false);
+			this.crownKing(oldX + 2*dX, oldY+2*dY);
+			grid[oldX][oldY]=null;
+			return true;
+		}
+		// Preform all moves
+		return false;
+		}
 
 	private boolean isValidNonjump(int oldX, int oldY, int newX, int newY) {
 		int xPos = newX - oldX;
@@ -182,8 +183,9 @@ public class CheckerBoard  {
 			return;
 		}
 	}
-	public boolean performMove(int oldX, int oldY, int newX, int newY, boolean black){
+	public boolean performMove(int oldX, int oldY, int newX, int newY){
 		// Fill me out
+		boolean black = CheckerGame.getInstance().isBlack();
 		if(oldX == newX && oldY == newY){
 			CheckerSquare square = grid[oldX][oldY];
 			if(square == null) 
