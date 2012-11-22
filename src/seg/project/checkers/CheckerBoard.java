@@ -87,7 +87,6 @@ public class CheckerBoard  {
 			grid[oldX][oldY]=null;
 			return true;
 		}
-		// Preform all moves
 		return false;
 		}
 
