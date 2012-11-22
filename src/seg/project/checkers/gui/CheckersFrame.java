@@ -45,7 +45,7 @@ public class CheckersFrame extends JFrame implements Observer, ActionListener{
 		temp.addLayoutComponent(turnIndicator,BorderLayout.EAST );
 		this.add(turnIndicator, BorderLayout.NORTH);
 		// Making new board
-		board = new CheckersBoardPanel(this);
+		board = new CheckersBoardPanel();
 		this.add(board, BorderLayout.CENTER);
 		// Final touches
 		this.setSize(900, 630);

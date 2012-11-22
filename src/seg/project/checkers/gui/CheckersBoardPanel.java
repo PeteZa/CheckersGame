@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import seg.project.checkers.CheckerBoard;
@@ -16,13 +15,11 @@ import seg.project.checkers.CheckerGame;
 import seg.project.checkers.CheckerSquare;
 
 public class CheckersBoardPanel extends JPanel  implements ActionListener{
-	private CheckerSquare currentButton;
+
 	private CheckerBoard board;
-	private CheckersFrame frame;
-	private boolean doubleJ;
+
 	private static final long serialVersionUID = 1L;
-	public CheckersBoardPanel(CheckersFrame frame){
-		this.frame = frame;
+	public CheckersBoardPanel(){
 		board = CheckerGame.getInstance().getBoard();
 		this.setLayout(new GridLayout(8, 8));
 		for(int i =0; i < 8;i++){
@@ -66,66 +63,13 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(!CheckerGame.getInstance().isTurn()){
-			CheckerGame.getInstance().addText("It is not your turn, please wait");
-			frame.updateText();
-			return;
-		}
 		if(e.getSource() instanceof JButton)
 		{
 			JButton button = (JButton) e.getSource();
 			int [] pos = findLoc(button);
-			CheckerSquare square = board.getGrid()[pos[0]][pos[1]];
-			if(currentButton == null){					
-				if(square != null&& board.performMove(pos[0], pos[1], pos[0], pos[1])){
-					reDraw();
-					currentButton = square;
-				}
-				else{
-					CheckerGame.getInstance().addText("The place: X-" + pos[0] + ", Y-" + pos[1]+ " is not a valid piece");
-					frame.updateText();
-				}
-			}
-			else{
-				int ox =currentButton.getxPos(),oy = currentButton.getyPos();
-				if(board.canJump(currentButton)) // going to jump
-					doubleJ = true;
-				if(board.performMove(currentButton.getxPos(),currentButton.getyPos(), pos[0], pos[1])){
-					reDraw();
-					if(!(ox == pos[0]&& oy== pos[1])){
-						CheckerGame.getInstance().sendCommand("move:"+ox+":"+oy+":"+pos[0]+":"+pos[1]);
-						if(board.canJump(currentButton) && doubleJ){// double jump
-							CheckerGame.getInstance().addText("You performed the move from  X-" + ox + ", Y-" + oy + " to X-" + pos[0] + ", Y-" + pos[1]);
-							frame.updateText();
-							return;
-						}
-						CheckerGame.getInstance().sendCommand("done");
-						CheckerGame.getInstance().setTurn(false);
-						frame.changeTurn();
-						if(board.win(CheckerGame.getInstance().isBlack())){
-							JOptionPane.showMessageDialog(null,"You won!");
-							System.exit(0);
-						}
-						else if(board.win(!CheckerGame.getInstance().isBlack())){
-							JOptionPane.showMessageDialog(null,"You lost!");
-							System.exit(0);
-						}
-					}
-					else if(board.canJump(currentButton) && doubleJ){
-						CheckerGame.getInstance().sendCommand("done");
-						CheckerGame.getInstance().setTurn(false);
-					}
-					CheckerGame.getInstance().addText("You performed the move from  X-" + ox + ", Y-" + oy + " to X-" + pos[0] + ", Y-" + pos[1]);
-					frame.updateText();
-					currentButton=null;
-					doubleJ = false;
-				}
-				else{
-					CheckerGame.getInstance().addText("The move: X-" + pos[0] + ", Y-" + pos[1]+ " is not a valid move");
-					frame.updateText();
-				}
-			}
-		}	
+			if(pos != null)
+				board.performMove(pos[0], pos[1]);
+		}
 	}
 	
 	public void reDraw(){

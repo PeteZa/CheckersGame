@@ -80,11 +80,7 @@ public class CheckerGame extends Observable {
 			
 			this.addText("Your turn");
 			this.notifyObservers(null);
-			if(board.win(black)){
-				JOptionPane.showMessageDialog(null,"You won!");
-				System.exit(0);
-			}
-			else if(board.win(!black)){
+			if(board.win(!black)){
 				JOptionPane.showMessageDialog(null,"You lost!");
 				System.exit(0);
 			}
@@ -97,6 +93,10 @@ public class CheckerGame extends Observable {
 	}
 	public void sendCommand(String msg){
 		Object mes = msg;
+		if(mes == null)
+			return;
+		if(mes.equals("done"))
+			turn = false;
 		if(server != null)
 			server.sendToAllClients(mes);
 		else if(client != null)
