@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.ListModel;
@@ -160,11 +161,21 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 	}
 	public static void main(String[] args) throws IOException{
 		ConnecterGUI s;
+		try{
 		if(args.length != 0)
 			s= new ConnecterGUI(Integer.parseInt(args[0]));
 		else
 			s = new ConnecterGUI(CheckersServer.DEFAULT_PORT);
 		s.setVisible(true);
+		}
+		catch(java.net.BindException e){
+			String input = JOptionPane.showInputDialog("Port is in use please enter another port");
+			if(input == null)
+				System.exit(0);
+			int port = Integer.parseInt(input);
+			s = new ConnecterGUI(port);
+			s.setVisible(true);
+		}
 	}
 
 }

@@ -122,7 +122,7 @@ public class CheckerBoard  {
 				if(pieceJumped)
 				{
 					pieceJumped = false;
-					CheckerGame.getInstance().sendCommand("Done");
+					CheckerGame.getInstance().sendCommand("done");
 				}
 			}
 			notify(null);
@@ -186,6 +186,8 @@ public class CheckerBoard  {
 				CheckerGame.getInstance().sendCommand("move:"+ox+":"+oy+":"+x+":"+y);
 				return;
 			}
+			else
+				pieceJumped=false;
 			square.setPieceSelected(false);
 			selectedPiece = null;
 			CheckerGame.getInstance().sendCommand("move:"+ox+":"+oy+":"+x+":"+y);
