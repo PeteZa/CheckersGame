@@ -62,16 +62,19 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 			this.setVisible(false);
 			if(makeConnectionFrame != null)
 				makeConnectionFrame.setVisible(false);
-			new CheckersFrame();
+			
 			if(CheckerGame.getInstance().getClient() !=null){
 				try {
 					CheckerGame.getInstance().getClient().closeConnection();
 					CheckerGame.getInstance().setClient(null);
+					CheckerGame.getInstance().setBlack(true);
+					CheckerGame.getInstance().setTurn(false);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
+			new CheckersFrame();
 			CheckerGame.getInstance().deleteObserver(this);
 			CheckerGame.getInstance().sendCommand("accept");
 		}
