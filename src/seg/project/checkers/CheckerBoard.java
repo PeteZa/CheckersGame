@@ -28,8 +28,10 @@ public class CheckerBoard  {
 						else if(i <3){
 							grid[i][u] = new CheckerSquare(this,i,u,true);
 							blackPieces.add(grid[i][u]);
+							
 						}
 					}
+				
 				else{
 					if(u%2 == 0){
 						if(i>=5){
@@ -88,11 +90,7 @@ public class CheckerBoard  {
 		return false;
 		}
 
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 */
+	
 	public void performMove(int x, int y){
 		if(!CheckerGame.getInstance().isTurn()){
 			notify("It is not your turn, please wait");
@@ -146,15 +144,16 @@ public class CheckerBoard  {
 				return;
 			}
 			grid[x][y] = square;
+			int ox = square.getxPos(), oy = square.getyPos();
 			square.setxPos(x);
 			square.setyPos(y);
 			square.setPieceSelected(false);
 			selectedPiece = null;
 			this.crownKing(x, y);
 			grid[oldX][oldY]=null;
-			CheckerGame.getInstance().sendCommand("move:"+oldX+":"+oldY+":"+x+":"+y);
+			CheckerGame.getInstance().sendCommand("move:"+ox+":"+oy+":"+x+":"+y);
 			CheckerGame.getInstance().sendCommand("done");
-			notify("You made move from X-"+oldX+" Y-"+oldY+" to X-"+x+" Y-"+y  );
+			notify("You made move from X-"+ox+" Y-"+oy+" to X-"+x+" Y-"+y  );
 			return;
 		}
 		else if(isValidjump(oldX,oldY,x , y)){
@@ -169,6 +168,7 @@ public class CheckerBoard  {
 			}
 			int dX = sign(x-oldX);
 			int dY = sign(y-oldY);
+			int ox =oldX, oy =oldY;
 			CheckerSquare toRem = grid[oldX + dX][oldY+dY];
 			if(square.isBlack())
 				redPieces.remove(toRem);
@@ -182,17 +182,17 @@ public class CheckerBoard  {
 			grid[oldX][oldY]=null;
 			if(canJump(square)){
 				pieceJumped = true;
-				notify("You made jump from X-"+oldX+" Y-"+oldY+" to X-"+x+" Y-"+y+ " it is still your turn");
-				CheckerGame.getInstance().sendCommand("move:"+oldX+":"+oldY+":"+x+":"+y);
+				notify("You made jump from X-"+ox+" Y-"+oy+" to X-"+x+" Y-"+y+ " it is still your turn");
+				CheckerGame.getInstance().sendCommand("move:"+ox+":"+oy+":"+x+":"+y);
 				return;
 			}
 			else
 				pieceJumped=false;
 			square.setPieceSelected(false);
 			selectedPiece = null;
-			CheckerGame.getInstance().sendCommand("move:"+oldY+":"+oldY+":"+x+":"+y);
+			CheckerGame.getInstance().sendCommand("move:"+ox+":"+oy+":"+x+":"+y);
 			CheckerGame.getInstance().sendCommand("done");
-			notify("You made jump from X-"+oldY+" Y-"+oldY+" to X-"+x+" Y-"+y  );
+			notify("You made jump from X-"+ox+" Y-"+oy+" to X-"+x+" Y-"+y  );
 			if(win(black))
 			{
 				JOptionPane.showMessageDialog(null,"You won!");
@@ -254,33 +254,33 @@ public class CheckerBoard  {
 		int xPos = newX - oldX;
 		int yPos = newY - oldY;
 		try{
-			CheckerSquare square = grid[oldX][oldY];
-			if(square == null)
+		CheckerSquare square = grid[oldX][oldY];
+		if(square == null)
+			return false;
+		
+		int absX = Math.abs(xPos);
+		int absY = Math.abs(yPos);
+		
+		if (absX != absY) return false;
+        if (absX > 2) return false;
+        if (absY > 2) return false;
+       
+        
+        CheckerSquare jumpSquare = grid[oldX+sign(xPos)][oldY+sign(yPos)];
+        
+        CheckerSquare landSquare = grid[oldX+2*sign(xPos)][oldY+2*sign(yPos)];
+        
+        if(jumpSquare == null)return false;
+        if(square.isBlack() == jumpSquare.isBlack())return false;
+ 
+        boolean king = square.isKing();
+        boolean invalidRedMove = ((!grid[oldX][oldY].isBlack()) && xPos > 0);
+        boolean invalidBlackMove = grid[oldX][oldY].isBlack() && xPos < 0;
+        if(!king && (invalidRedMove || invalidBlackMove) )
 				return false;
-			
-			int absX = Math.abs(xPos);
-			int absY = Math.abs(yPos);
-			
-			if (absX != absY) return false;
-	        if (absX > 2) return false;
-	        if (absY > 2) return false;
-	       
-	        
-	        CheckerSquare jumpSquare = grid[oldX+sign(xPos)][oldY+sign(yPos)];
-	        
-	        CheckerSquare landSquare = grid[oldX+2*sign(xPos)][oldY+2*sign(yPos)];
-	        
-	        if(jumpSquare == null)return false;
-	        if(square.isBlack() == jumpSquare.isBlack())return false;
-	 
-	        boolean king = square.isKing();
-	        boolean invalidRedMove = ((!grid[oldX][oldY].isBlack()) && xPos > 0);
-	        boolean invalidBlackMove = grid[oldX][oldY].isBlack() && xPos < 0;
-	        if(!king && (invalidRedMove || invalidBlackMove) )
-					return false;
-	        
-	        if(landSquare != null)return false;
-	        return (true);
+        
+        if(landSquare != null)return false;
+        return (true);
 		}
 		catch( java.lang.ArrayIndexOutOfBoundsException e){
 			return false;
@@ -339,3 +339,4 @@ public class CheckerBoard  {
 		}
 	}
 }
+
