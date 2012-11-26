@@ -30,7 +30,7 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 	private JTextArea connectHost;
 	private JTextArea connectPort;
 	private JLabel messageLabel;
-	private JButton accept;
+	
 	public ConnecterGUI(int port) throws IOException{
 		super("Connection creater");
 		CheckerGame.getInstance().setServer(new CheckersServer(port));
@@ -40,7 +40,7 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 		makeConnection.addActionListener(this);
 		connectionRequests = new JList<String>();
 		connectionRequests.setToolTipText("This shows all the players who want to start a game with you");
-		accept = new JButton("Accept selected player");
+		JButton accept = new JButton("Accept selected player");
 		accept.addActionListener(this);
 		this.add(connectionRequests, BorderLayout.CENTER);
 		this.add(makeConnection, BorderLayout.NORTH);
@@ -57,14 +57,21 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 			String req = connectionRequests.getSelectedValue();
 			if(req == null)
 				return;
-			
-			
 			if(!server.setToGameMode(req))
 				return;
 			this.setVisible(false);
 			if(makeConnectionFrame != null)
 				makeConnectionFrame.setVisible(false);
 			new CheckersFrame();
+			if(CheckerGame.getInstance().getClient() !=null){
+				try {
+					CheckerGame.getInstance().getClient().closeConnection();
+					CheckerGame.getInstance().setClient(null);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 			CheckerGame.getInstance().deleteObserver(this);
 			CheckerGame.getInstance().sendCommand("accept");
 		}
@@ -99,9 +106,7 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 			try {
 				CheckerGame.getInstance().setClient(new CheckersClient(host, port));
 				messageLabel.setText("Connected, please wait for response");
-				((JButton)e.getSource()).setEnabled(false);
-				this.accept.setEnabled(false);
-				
+				((JButton)e.getSource()).setEnabled(false);	
 			} catch (IOException e1) {
 				messageLabel.setText("Connection Failed");
 			}
