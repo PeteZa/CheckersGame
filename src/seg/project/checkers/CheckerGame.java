@@ -67,6 +67,7 @@ public class CheckerGame extends Observable {
 		else if(commands[0].equals("draw")){
 			if(drawReq){
 				JOptionPane.showMessageDialog(null, "A draw has been accepted");
+				this.sendCommand("draw");
 				System.exit(0);
 			}
 			else{

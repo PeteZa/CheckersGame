@@ -25,12 +25,7 @@ public class CheckerSquare{
 		king = isKing;
 		selected = isSelected;
 		}
-	/**
-	 * 
-	 * @param x X pos on board
-	 * @param y Y pos on board
-	 * @return if the position is valid for a piece
-	 */
+	
 	
 	public String getImage(){
 		String imageName = "";

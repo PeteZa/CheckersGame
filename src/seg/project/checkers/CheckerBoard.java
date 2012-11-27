@@ -316,10 +316,8 @@ public class CheckerBoard {
 	/**
 	 * this method is to check see who win the game
 	 * 
-	 * @param black
-	 *            the black piece player
-	 * @return true if the black piece player wins or red piece player wins
-	 *         otherwise return false
+	 * @param black the black piece player
+	 * @return true if the black piece player wins or red piece player wins otherwise return false
 	 */
 	public boolean win(boolean black) {
 		if (blackPieces.isEmpty() && !black)
@@ -333,16 +331,11 @@ public class CheckerBoard {
 	/**
 	 * this method is check to see if the player made a valid jump move
 	 * 
-	 * @param oldX
-	 *            the player's selected piece old x coordinate
-	 * @param oldY
-	 *            the player's selected piece old y coordinate
-	 * @param newX
-	 *            the player's selected piece new x coordinate
-	 * @param newY
-	 *            the player's selected piece new y coordinate
-	 * @return true if the move made by the player is valid otherwise return
-	 *         false
+	 * @param oldX the player's selected piece old x coordinate
+	 * @param oldY the player's selected piece old y coordinate
+	 * @param newX  the player's selected piece new x coordinate
+	 * @param newY the player's selected piece new y coordinate
+	 * @return true if the move made by the player is valid otherwise return false
 	 */
 	private boolean isValidjump(int oldX, int oldY, int newX, int newY) {
 		int xPos = newX - oldX;
