@@ -5,10 +5,17 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import ocsf.client.AbstractClient;
-
+/**
+ *  
+ *
+ */
 public class CheckersClient extends AbstractClient {
-
-
+	/**
+	 * 
+	 * @param host
+	 * @param port
+	 * @throws IOException
+	 */
 	public CheckersClient(String host, int port) throws IOException {
 		super(host, port);
 		// TODO Auto-generated constructor stub

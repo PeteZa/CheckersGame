@@ -116,6 +116,7 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 				portString.trim();	 
 				if(portString.equals("")){ // If they left it blank
 					port = CheckersServer.DEFAULT_PORT;
+					
 				}
 				else{
 					try{
@@ -131,6 +132,13 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 				messageLabel.setText("You need to enter a host name"); // Tell them what to do
 				
 				return;
+			}
+			if(host.equalsIgnoreCase("localhost")){
+				if(port == server.getPort())
+				{
+					messageLabel.setText("You can't connect to yourself"); // Tell them what they just tried
+					return;
+				}
 			}
 			try { // Check for errors
 				CheckerGame.getInstance().setClient(new CheckersClient(host, port)); // try and connect to the host and port provided
