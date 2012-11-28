@@ -6,15 +6,15 @@ import javax.swing.JOptionPane;
 
 import ocsf.client.AbstractClient;
 /**
- *  
+ *  This is a client the checkers game can use to communicate with the other player
  *
  */
 public class CheckersClient extends AbstractClient {
 	/**
-	 * 
-	 * @param host
-	 * @param port
-	 * @throws IOException
+	 * Basic constructor for the client, it attempts to connect to the server on creation
+	 * @param host The host name
+	 * @param port the port to connect to
+	 * @throws IOException If the connection has a error
 	 */
 	public CheckersClient(String host, int port) throws IOException {
 		super(host, port);
@@ -31,7 +31,7 @@ public class CheckersClient extends AbstractClient {
 		
 	}
 	protected void connectionException(Exception exception) {
-		JOptionPane.showMessageDialog(null, "Connection to other player lost, exiting");
+		JOptionPane.showMessageDialog(null, "Connection to other player lost, exiting"); // If I loose connection end the game
 		System.exit(0);
 	}
 

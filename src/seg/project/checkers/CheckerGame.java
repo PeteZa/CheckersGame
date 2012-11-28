@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 /**
  * This is a Singleton class for the game, it is observable, and will notify when the board updates, or when a client connects to the server if the game has not started yet
- *
+ * 
  */
 public class CheckerGame extends Observable {
 	private static CheckerGame game;
@@ -115,7 +115,7 @@ public class CheckerGame extends Observable {
 		super.notifyObservers(o);
 	}
 	/**
-	 * Send the command to the other player
+	 * Send the command to the other player, if both a server and a client exist, the server will send the message and the client is ignored
 	 * @param msg the command to send
 	 */
 	public void sendCommand(String msg){
