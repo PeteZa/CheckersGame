@@ -6,7 +6,7 @@ import java.util.Observable;
 import javax.swing.JOptionPane;
 
 /**
- * This is a Singleton class for the game, it is observable, and will notify when the board updates, or when a client connects to the server if the game has not started yet
+ * This is a Singleton class for the game, it is observable, and will notify when the board updates
  * 
  */
 public class CheckerGame extends Observable {

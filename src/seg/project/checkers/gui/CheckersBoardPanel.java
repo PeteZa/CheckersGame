@@ -68,6 +68,9 @@ public class CheckersBoardPanel extends JPanel  implements ActionListener{
 			}
 		}
 	}
+	/**
+	 * This will be called when a user clicks on a button, and it will send the move to the board for processing
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() instanceof JButton) // make sure the event is a button

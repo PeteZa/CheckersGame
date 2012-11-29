@@ -19,10 +19,10 @@ import javax.swing.border.LineBorder;
 
 import seg.project.checkers.CheckerGame;
 /**
- * This is the main GUI for diplaying the board and the console. It observers the checker game for changes and updates if it finds one
+ * This is the main GUI for displaying the board and the console. It observers the checker game for changes and updates if it finds one
  * 
  */
-class CheckersFrame extends JFrame implements Observer, ActionListener{
+public class CheckersFrame extends JFrame implements Observer, ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JTextArea consoleText;
 	private JScrollPane console;
@@ -108,6 +108,9 @@ class CheckersFrame extends JFrame implements Observer, ActionListener{
 			info = "Black's Turn"+ new String(new char[17]);
 		turnIndicator.setText(info); // set up the new text
 	}
+	/**
+	 * This method is called when a user presses the request draw checkbox
+	 */
 	@Override
 	public void actionPerformed(ActionEvent ev) {
 		if(!(ev.getSource() instanceof JCheckBox)) // make sure it was a checkbox that called this method
