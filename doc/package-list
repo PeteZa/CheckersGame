@@ -2,3 +2,4 @@ ocsf.client
 ocsf.server
 seg.project.checkers
 seg.project.checkers.gui
+seg.project.checkers.testCases

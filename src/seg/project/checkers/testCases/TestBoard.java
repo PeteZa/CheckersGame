@@ -89,16 +89,16 @@ public class TestBoard {
 		System.out.println("Before moving, new board set up and you are red");
 		// Black set up
 		grid[0][3] = null;
-		grid[3][0] = new CheckerSquare(board, 0, 3,true);
+		grid[3][0] = new CheckerSquare( 0, 3,true);
 		grid[2][5] = null;
-		grid[3][4] = new CheckerSquare(board, 3, 4,true);
+		grid[3][4] = new CheckerSquare( 3, 4,true);
 		//red set up
-		grid[4][3] =  new CheckerSquare(board, 4, 3,false);
+		grid[4][3] =  new CheckerSquare( 4, 3,false);
 		grid[5][2]=null;
 		grid[6][3] = null;
 		grid[5][6]=null;
-		grid[4][5] = new CheckerSquare(board, 4, 5,false);
-		grid[4][7] = new CheckerSquare(board, 4, 7,false);
+		grid[4][5] = new CheckerSquare(4, 5,false);
+		grid[4][7] = new CheckerSquare( 4, 7,false);
 		CheckerGame.getInstance().setBlack(false);
 		CheckerGame.getInstance().setTurn(true);
 		CheckerGame.getInstance().blankText();
