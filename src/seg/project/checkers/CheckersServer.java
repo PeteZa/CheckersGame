@@ -40,9 +40,12 @@ public class CheckersServer extends AbstractServer {
 		
 	}
     protected void clientConnected(ConnectionToClient client) { // When a client connects it will notify the listeners who connected
-    	if(!isGameMode()) // if it is in game mode, I don't want to notify
+    	if(!isGameMode()) // if it is in game mode I don't want to notify
+    	{
     		CheckerGame.getInstance().notifyObservers(client);
+    	}
 	}
+   
     synchronized protected void clientException(
     	    ConnectionToClient client, Throwable exception) {
     	if(gameMode) // if it is still waiting to accept a player I do not need to end the program

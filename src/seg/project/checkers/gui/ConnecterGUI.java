@@ -109,11 +109,11 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 		// If the want to try and connect to another player
 		else if(command.equals("Connect")){
 			String host = connectHost.getText(); // Get the host name
-			host.trim();  // just in case the added extra spaces
+			host = host.trim();  // just in case the added extra spaces
 			int port; // the port
 			if(!host.equals("")){ // If they didn't leave it empty
 				String portString = connectPort.getText(); // Get the port
-				portString.trim();	 
+				portString = portString.trim();	 
 				if(portString.equals("")){ // If they left it blank
 					port = CheckersServer.DEFAULT_PORT;
 					
@@ -190,11 +190,13 @@ public class ConnecterGUI extends JFrame implements ActionListener, Observer{
 		connectHost = new JTextArea("");
 		connectHost.setColumns(10);
 		connectHost.setToolTipText("Enter host name here");
+		connectHost.getDocument().putProperty("filterNewlines", Boolean.TRUE);// Code for disallowing the return key to be pressed
 		// So the user knows what to do with the port field, and they can leave it blank if they want
 		JLabel label2 = new JLabel("Enter port here, leave empty for default");
 		connectPort = new JTextArea("");
 		connectPort.setToolTipText("Enter port here, leave empty for default");
 		connectPort.setColumns(10);
+		connectHost.getDocument().putProperty("filterNewlines", Boolean.TRUE);
 		// Add all the panels to the frame, so everything renders properly
 		JPanel pane1 = new JPanel();
 		pane1.add(label1,BorderLayout.EAST);
